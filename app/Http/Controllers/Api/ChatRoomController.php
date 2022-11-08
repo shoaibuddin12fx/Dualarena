@@ -127,13 +127,46 @@ class ChatRoomController extends Controller
 
         $data = $request->all();
 
-        $chatRoom = new ChatRoom();
-        $chatRoom->name = $data['name'];
-        $chatRoom->description = isset($data['description']) ? $data['description'] : "";
-        $chatRoom->save();
+        $chatRoomUser = new ChatRoomUser();
+        $chatRoomUser->chat_room_id = $data['chat_room_id'];
+        $chatRoomUser->user_id = $data['user_id'];
+        $chatRoomUser->save();
 
-        return self::success('User created', ['data' => $chatRoom]);
+        return self::success('User created', ['data' => $chatRoomUser]);
 
 
     }
+
+
+    public function sendUserMsgInChatRoom(Request $request){
+
+        $data = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'chat_room_id' => 'required|exists:chat_rooms,id',
+            'message' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return self::failure($validator->errors()->first(), ['data' => []]);
+        }
+
+        $userId = auth()->user()->id;
+
+        $chatRoomUser = new ChatRoomUser();
+        $chatRoomUser->chat_room_id = $data['chat_room_id'];
+        $chatRoomUser->user_id = $userId;
+        $chatRoomUser->message = $data['message'];
+        $chatRoomUser->save();
+
+
+        return self::success('Message created', ['data' => $chatRoomUser]);
+
+
+    }
+
+
+
+
+
 }
