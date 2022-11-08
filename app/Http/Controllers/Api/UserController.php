@@ -21,17 +21,34 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function login()
+    public function login(Request $request)
     {
-        if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
+        $data = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required'            
+        ]);
+
+        if ($validator->fails()) {
+            return self::failure($validator->errors()->first());
+        }
+
+
+        if ( Auth::attempt(['email' => $data['email'], 'password' => $data['password'] ] ) ) {
             $user = Auth::user();
             $token['token'] = $user->createToken('MyLaravelApp')->accessToken;
-            $user['userId'] = $user->id;
-        }
-        return self::success('User login', ['data' => [
-            'user' => $user,
-            'token' => $token,
-        ]]);
+
+            return self::success('User login', ['data' => [
+                'user' => $user,
+                'token' => $token,
+            ]]);
+
+        } else {
+            return self::failure('User login failed');
+        } 
+
+        
 
     }
 
@@ -76,7 +93,6 @@ class UserController extends Controller
     {
 
         $data = $request->user()->tokens()->delete();
-
         return self::success('User logout', ['data' => []]);
 
     }

@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MailController;
+use App\Http\Controllers\Api\ChatRoomController;
 
 
 /*
@@ -18,9 +19,9 @@ use App\Http\Controllers\Api\MailController;
 |
  */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
@@ -40,6 +41,16 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::post('sendEmail', [MailController::class, 'sendEmail']);
     Route::post('sendEmailVerification', [MailController::class, 'sendEmailVerification']);
+
+
+    Route::controller(ChatRoomController::class)->group(function(){
+        Route::group(['prefix' => 'chat'], function(){
+            Route::get('chat-room', 'index');
+            Route::post('add-chat-room', 'create');
+            Route::post('add-user-in-chat-room', 'addUserInChatRoom');
+
+        });
+    });
 
 
     //  Route::any('request_otp', [UserController::class, 'requestOtp']);
