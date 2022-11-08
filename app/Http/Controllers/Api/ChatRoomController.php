@@ -180,7 +180,7 @@ class ChatRoomController extends Controller
 
         $userId = auth()->user()->id;
 
-        $chatRoomList = ChatRoomUser::where('chat_room_id', $data['chat_room_id'])->get();
+        $chatRoomList = ChatRoomUser::with('user')->where('chat_room_id', $data['chat_room_id'])->get();
 
         return self::success('Message created', ['data' =>  $chatRoomList]);
 
