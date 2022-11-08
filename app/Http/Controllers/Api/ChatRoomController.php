@@ -165,6 +165,28 @@ class ChatRoomController extends Controller
 
     }
 
+    public function chatRoomListById(Request $request){
+
+        // irrr
+        $data = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'chat_room_id' => 'required|exists:chat_rooms,id',
+        ]);
+
+        if ($validator->fails()) {
+            return self::failure($validator->errors()->first(), ['data' => []]);
+        }
+
+        $userId = auth()->user()->id;
+
+        $chatRoomList = ChatRoomUser::where('chat_room_id', $data['chat_room_id'])->get();
+
+        return self::success('Message created', ['data' =>  $chatRoomList]);
+
+
+    }
+
 
 
 

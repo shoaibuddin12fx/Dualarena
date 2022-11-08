@@ -49,6 +49,9 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::post('add-chat-room', 'create');
             Route::post('add-user-in-chat-room', 'addUserInChatRoom');
             Route::post('send-user-msg-in-chat-room', 'sendUserMsgInChatRoom');
+            Route::post('chat-room-list-by-id', 'chatRoomListById');
+
+
 
 
         });
