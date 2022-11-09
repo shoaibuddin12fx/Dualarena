@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ChatRoom;
 use App\Models\ChatRoomUser;
+use App\Events\NewMessage;
 use Validator;
 
 
@@ -159,7 +160,7 @@ class ChatRoomController extends Controller
         $chatRoomUser->message = $data['message'];
         $chatRoomUser->save();
 
-        event(new App\Events\NewMessage($chatRoomUser));
+        event(new NewMessage($chatRoomUser));
 
         return self::success('Message created', ['data' => $chatRoomUser]);
 
