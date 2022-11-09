@@ -159,6 +159,7 @@ class ChatRoomController extends Controller
         $chatRoomUser->message = $data['message'];
         $chatRoomUser->save();
 
+        event(new App\Events\NewMessage($chatRoomUser));
 
         return self::success('Message created', ['data' => $chatRoomUser]);
 
